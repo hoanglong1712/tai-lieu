@@ -1,0 +1,57 @@
+# mapred-site.xml update
+<property>
+  <name>yarn.app.mapreduce.am.env</name>
+  <value>HADOOP_MAPRED_HOME=${HADOOP_HOME}</value>
+</property>
+<property>
+  <name>mapreduce.map.env</name>
+  <value>HADOOP_MAPRED_HOME=${HADOOP_HOME}</value>
+</property>
+<property>
+  <name>mapreduce.reduce.env</name>
+  <value>HADOOP_MAPRED_HOME=${HADOOP_HOME}</value>
+</property>
+
+# Hive-site.xml files
+<property>
+<name>system:java.io.tmpdir</name>
+<value>/tmp/hive/java</value>
+</property>
+<property>
+<name>system:user.name</name>
+<value>${user.name}</value>
+</property>
+
+# For bashrc
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+export HADOOP_HOME=/home/rakib/hadoop
+export HADOOP_INSTALL=$HADOOP_HOME
+export HADOOP_MAPRED_HOME=$HADOOP_HOME
+export HADOOP_COMMON_HOME=$HADOOP_HOME
+export HADOOP_HDFS_HOME=$HADOOP_HOME
+export HADOOP_YARN_HOME=$HADOOP_HOME
+export HADOOP_COMMON_LIB_NATIVE=$HADOOP_HOME/lib/native
+export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib/native"
+
+export HIVE_HOME=/home/rakib/hive
+export HIVE_CONF_DIR=$HIVE_HOME/conf
+export PATH=$PATH:$HIVE_HOME/bin
+export CLASSPATH=$CLASSPATH:$HADOOP_HOME/lib/*:.
+export CLASSPATH=$CLASSPATH:$HIVE_HOME/lib/*:.
+
+# Hdfs folder creation
+hdfs dfs -mkdir -p /user/hive/warehouse
+hdfs dfs -mkdir /tmp
+
+# Hdfs folder access permison commands
+hdfs dfs -chmod g+w /user
+hdfs dfs -chmod g+wx /user
+hdfs dfs -chmod g+w /tmp
+hdfs dfs -chmod g+wx /tmp
+
+# copy guava file command
+cp /home/rakib/hadoop/share/hadoop/common/lib/guava-27.0-jre.jar /home/rakib/hive/lib
+
+# Edit .sql file location
+/home/rakib/hive/scripts/metastore/upgrade/derby/hive-schema-3.1.0.derby.sql
