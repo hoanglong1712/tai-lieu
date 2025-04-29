@@ -1,0 +1,137 @@
+// Lab exercise Week 7&8
+// Creating a dataframe myRange0 and assign it with 20 integer values generated
+// using the function range().
+val myRange0 = spark.range(20).toDF("Number")
+myRange0.show()
+val myRange1 = spark.range(18).toDF("Number")
+myRange1.show()
+
+// To check/verify the schema of a datafram, we use the function printSchema()
+// e.g., myRange0.printSchema()
+myRange0.printSchema()
+
+// Perform a set operation, e.g., 'except' on two dataframe objects.
+val myRange2 = myRange0.except(myRange1)
+myRange2.show()
+
+myRange0.except(myRange1).show()
+
+// We can create a DataFrame on data that are stored in HDFS.
+// For example, we first load the file README.md in $SPARK_HOME
+// to HDFS at /user/bigdata.
+$HADOOP_HOME/bin/hadoop fs -put /usr/share/spark/README.md /user/bigdata
+
+// At the scala prompt (Spark shell), type in the following command
+// to read in from Hadoop /user/bigdata directory a textfile.
+val text = spark.read.textFile("README.md")
+
+// To show how many lines contain in the data set 'text' the word "Spark".
+text.filter(line => line.contains("Spark")).count()
+
+// Find the length of the longest line in the data set 'text'
+text.map(line=> line.split(" ").size).reduce((a,b) => if (a > b) a else b)
+
+// Implements a naive wordcount application:
+val wordCounts = text.flatMap(line => line.split(" ")).groupByKey(identity).count()
+wordCounts.show()
+wordCounts.collect()
+
+// Implements using RDD
+val lines = sc.textFile("sales.txt")
+val pairs = lines.map(s=>(s.split(" ")(0),(s.split(" ")(1).toInt)))
+pairs.collect()
+val results = pairs.reduceByKey((a,b)=>a+b)
+results.collect()
+// Print the content of the RDD results by line using foreach() method.
+results.foreach(println)
+lines.foreach(println)
+
+// DataFrame/Dataset transformation and actions
+// Upload the following dataset to Hadoop /user/Bigdata directory (Note: Need
+// to do these in Linux command line (Not the Spark shell).
+$HADOOP_HOME/bin/hadoop fs -put /home/bigdata/SPARK-2024S2/people.json /user/bigdata
+$HADOOP_HOME/bin/hadoop fs -put /home/bigdata/SPARK-2024S2/people.txt /user/bigdata
+$HADOOP_HOME/bin/hadoop fs -put /home/bigdata/SPARK-2024S2/employee.json /user/bigdata
+
+// Read a json file into a DataFrame
+val peopleDF = spark.read.json("/user/bigdata/people.json")
+peopleDF.show()
+peopleDF.printSchema()
+
+// Perform some basic relational operations with the DataFrame
+peopleDF.select($"name", $"age"+1).show()
+peopleDF.filter($"age">21).show()
+peopleDF.groupBy("age").count().show()
+
+// We can convert a DataFrame into a relational view
+peopleDF.createOrReplaceTempView("people")
+val peopleView = spark.sql("select * from people")
+peopleView.show()
+
+val peopleView = spark.sql("select * from people where age > 20")
+peopleView.show()
+
+val peopleView = spark.sql("select name, count(age) from people group by name")
+peopleView.show()
+
+val peopleView = spark.sql("select age, count(*) from people group by age")
+peopleView.show()
+
+// Create a Dataset
+// We can create a dataset by inserting a key value using a Seq() function.
+// A sequence is an ordered collection of elements where duplicates are 
+// allowed and the order of elements is preserved (immutable).
+case class Person(name: String, age: Long)
+val myPersonDS = Seq(Person("Andy", 32)).toDS()
+myPersonDS.show()
+myPersonDS.select($"name").show()
+
+// We can convert a Dataset into a relational view
+myPersonDS.createOrReplaceTempView("people1")
+val peopleView = spark.sql("select * from people1")
+peopleView.show()
+
+// We can create a dataset by inserting values from a json file.
+// Define the schema of your text file using class
+case class Employee(name: String, salary: Long)
+val employeeDS = spark.read.json("/user/bigdata/employees.json").as [Employee]
+
+// DataFrame:
+// Load a text file from Hadoop into a DataFrame
+// Define the schema of sales.txt
+case class sales(part:String, qty: Long)
+// Read the text file and tokenize the data according to the defined schema
+// and set it as a dataframe object (.toDF())
+val partDF = sc.textFile("/user/bigdata/sales.txt").map(_.split(" ")).map(attributes=>sales(attributes(0), attributes(1).trim.toInt)).toDF()
+// Convert the DataFrame into a relational view, and use 'group by' and 
+// 'count' in SQL to find the required answer
+partDF.createOrReplaceTempView("partView")
+val sqlDF = spark.sql("select part, sum(qty) from partView group by part")
+sqlDF.show()
+
+// Dataset:
+// Load a text file from Hadoop into a Dataset
+// Define the schema of sales.txt
+case class sales(part:String, qty: Long)
+// Read the text file and tokenize the data according to the defined schema
+// and set it as a dataframe object (.toDS())
+val lines = sc.textFile("/user/bigdata/sales.txt")
+val partDS = lines.map(_.split(" ")).map(attributes => sales(attributes(0), attributes(1).toInt)).toDS()
+partDS.show()
+// Perform a groupBy relational operations to compute the required result
+val totalResult = partDS.groupBy("part").sum("qty")
+totalResult.show()
+
+// Resilient Distributed Dataset (RDD):
+// Load a text file from Hadoop into an RDD data structure
+// Define the schema of sales.txt
+val salesRDD = sc.textFile("/user/bigdata/sales.txt")
+// Transform (tokenize) the salesRDD into a key-value pair
+val pairs = salesRDD.map(s => (s.split(" ")(0), (s.split(" ")(1).toInt)))
+// Perform a collection action to retrieve all the elements of the salesRDD.
+pairs.collect()
+// Peform a collection action reduceByKey to return the result
+val result = pairs.reduceByKey((a,b)=>a+b)
+result.collect()
+result.foreach(println)
+
