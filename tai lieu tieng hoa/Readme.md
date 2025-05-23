@@ -1,2 +1,6 @@
 
 link tư liệu trên google https://drive.google.com/drive/folders/1npnanhcHdnK7GyIuueKPvcttOwcX35D4?fbclid=IwY2xjawH_LXhleHRuA2FlbQIxMAABHUiqSmv8v5SeDuSPM_Knfx8c_iQZvlMu2qWutteSvH5g4ahlQTP9oJhMmg_aem_o32XZGJTyS93PP9rt8eZnA
+
+link đề thi hsk
+
+https://drive.google.com/drive/mobile/folders/1_4nJnCKnjKYpUVSza2qsumi0TV3S0W5E?usp=drive_link&fbclid=IwY2xjawKdaeJleHRuA2FlbQIxMQABHgPcDldIcaIXCMh7sFNjweIRHhS6Y529_LIrqQy98RgrpK5hDiIVNjRNUYcz_aem_wlKnjPCM3Vi6YfPTHFSZmw
