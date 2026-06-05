@@ -1,1 +1,1 @@
-
+https://graphics.stanford.edu/courses/cs205a-13-fall/assets/notes/cs205a_notes.pdf?fbclid=IwY2xjawSPQ5RleHRuA2FlbQIxMQBzcnRjBmFwcF9pZAwzNTA2ODU1MzE3MjgAAR7Y1RtAzkjMB3NVkDtsUfADvi3YAR0G2zOjCo9hwt6-0OoIB0fgJJyYP3bfCQ_aem_-oWYCXBl20n8fIrUsAPT7Q&utm_id=97758_v0_s00_e233_tv2_tp2_a1dennhb7o7k19
