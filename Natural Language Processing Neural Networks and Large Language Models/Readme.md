@@ -1,2 +1,4 @@
 - https://github.com/NiuTrans/NLPBook
 - 19-9-2026
+- youtube: https://www.youtube.com/playlist?list=PLcgBaknPzamI
+- 5-10-2026
